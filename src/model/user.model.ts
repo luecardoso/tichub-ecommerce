@@ -1,7 +1,4 @@
-enum Role {
-  'ADMIN',
-  'CUSTOMER',
-}
+import type { Role } from "@/enums/role";
 
 export class User {
   constructor(

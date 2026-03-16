@@ -3,6 +3,7 @@ import ProductCard from './components/card/ProductCard.vue'
 import { Cart } from './model/cart.model'
 import { Category } from './model/category.model'
 import { Product } from './model/product.model'
+import CartItem from './components/card/CartItem.vue'
 
 export default {
   data() {
@@ -15,7 +16,7 @@ export default {
           1,
           'Violão',
           'Violão Acústico Tradicional para Iniciantes',
-          245,
+          250,
           0.2,
           category1,
         ),
@@ -23,7 +24,7 @@ export default {
           2,
           'O retrato de Dorian Gray',
           'Edição Português por Oscar Wilde (Autor), Paulo Schiller (Tradutor) ',
-          245,
+          50,
           0.2,
           category2,
         ),
@@ -34,27 +35,48 @@ export default {
     addItem(product: Product) {
       this.cart.addItem(product)
     },
+    decItem(product: Product) {
+      this.cart.decItem(product)
+    },
+    removeItem(item: Product) {
+      this.cart.removeItem(item)
+    },
   },
   components: {
     ProductCard,
+    CartItem,
   },
 }
 </script>
 
 <template>
   <main>
-    <div v-for="product in products" :key="product.name">
-      <ProductCard :product="product" @onClick="addItem" />
-    </div>
+    <section
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 w-full bg-amber-400"
+    >
+      <div v-for="product in products" :key="product.id">
+        <ProductCard :product="product" @onClick="addItem" />
+      </div>
+    </section>
   </main>
 
   <div>
     <h1>Carrinho</h1>
-    <div v-for="item in cart.list" :key="item.product.name">
-      <h1>{{ item.product.name }}</h1>
-      <p>{{ item.quantity }}</p>
+    <div>
+      <div v-if="cart.list.length > 0" class="flex flex-col gap-4">
+        <div v-for="item in cart.list" :key="item.product.id">
+          <CartItem :item="item" @decrementItem="decItem" @removeItem="removeItem" />
+        </div>
+      </div>
+      <div
+        v-else
+        class="border border-slate-500 bg-slate-400 rounded-sm h-64 w-1/2 flex items-center justify-center"
+      >
+        <h1>{{ 'Adicione itens ao carrinho' }}</h1>
+      </div>
     </div>
-    <p>Itens: {{ cart.total }}</p>
-    <p>Total R$ {{ cart.getFinalPrice() }}</p>
   </div>
+
+  <p>Valor total: {{ cart.getFinalPrice() }}</p>
+  <Button :label="'Primevue'" />
 </template>
